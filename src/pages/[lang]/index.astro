@@ -1,0 +1,11 @@
+---
+import { LOCALES } from "@i18n";
+import Main from "@components/Main.astro";
+
+export const getStaticPaths = () => Object.keys(LOCALES).map((lang: string) => ({ params: { lang } }));
+
+const { lang } = Astro.params;
+const dict = LOCALES[lang];
+---
+
+<Main dict={dict} />

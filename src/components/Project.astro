@@ -1,0 +1,114 @@
+---
+import type { DictSchema } from "@i18n";
+import { Picture } from "astro:assets";
+import TECHS from "../lib/techs";
+import Link from "@assets/Link.svg";
+
+const { project } = Astro.props as {
+  project: DictSchema["projects"][number];
+};
+
+const {
+  title,
+  subtitle,
+  link,
+  linkText,
+  codeLink,
+  codeText,
+  Img,
+  alt,
+  tags,
+  desc,
+  cite,
+} = project;
+---
+
+<article class="space-y-26">
+  <header class="space-y-2 mb-8 text-center">
+    <h3 class="font-medium text-2xl">{title}</h3>
+    <p>{subtitle}</p>
+    {
+      link && (
+        <a
+          href={link}
+          target="_blank"
+          rel="noopener"
+          class="mx-auto mb-6 hover:underline font-medium inline-flex gap-1.5 justify-center items-center p-2 w-max mr-4"
+        >
+          <Link
+            preserveAspectRatio="xMidYMid meet"
+            aria-hidden="true"
+            focusable="false"
+            class="size-5 hover:inverted-theme focus-visible:inverted-theme focus-within:inverted-theme text-inverted-theme"
+          />
+          {linkText}
+        </a>
+      )
+    }
+    {
+      codeLink && (
+        <a
+          href={codeLink}
+          target="_blank"
+          rel="noopener"
+          class="mx-auto mb-6 hover:underline font-medium inline-flex gap-1.5 justify-center items-center p-2 w-max"
+        >
+          <Link
+            preserveAspectRatio="xMidYMid meet"
+            aria-hidden="true"
+            focusable="false"
+            class="size-5 hover:inverted-theme focus-visible:inverted-theme focus-within:inverted-theme text-inverted-theme"
+          />
+          {codeText}
+        </a>
+      )
+    }
+  </header>
+  <div
+    class="flex flex-row-reverse max-[1645px]:flex-col max-[1645px]:items-center flex-wrap gap-8 justify-center items-stretch"
+  >
+    <Picture
+      src={Img}
+      alt={alt}
+      width="750"
+      sizes="(max-width: 768px) 95vw, 750px"
+      formats={["avif", "webp"]}
+      class="inline-block"
+    />
+    <div class="flex flex-col justify-center items-center min-[1645px]:mt-18">
+      {
+        desc.map((line: string) => (
+          <p class="whitespace-pre-line text-pretty leading-7.5 max-w-[78ch] px-[0.25px]">
+            {line}
+          </p>
+        ))
+      }
+      <footer class="mt-auto max-[1645px]:mt-8 text-center w-full">
+        {cite && <q class="italic">{cite}</q>}
+        <ul
+          class="flex flex-wrap -space-x-3 gap-y-2.5 mx-auto mt-6 justify-center"
+        >
+          {
+            tags.map((tag: string) => {
+              const tech = TECHS[tag.toLowerCase()];
+              const Svg = tech.svg;
+              return (
+                <li>
+                  <figure class="flex gap-1.5 justify-center items-center px-4 rounded-full py-1 w-max">
+                    <Svg
+                      class="size-8 block"
+                      preserveAspectRatio="xMidYMid meet"
+                      aria-hidden="true"
+                      focusable="false"
+                    />
+                    <figcaption>{tech.name}</figcaption>
+                  </figure>
+                </li>
+              );
+            })
+          }
+        </ul>
+      </footer>
+    </div>
+  </div>
+</article>

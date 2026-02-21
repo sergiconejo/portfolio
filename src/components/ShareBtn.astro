@@ -1,0 +1,101 @@
+---
+import Share from "@assets/share/Share.svg";
+import Check from "@assets/share/Check.svg";
+import Err from "@assets/share/Err.svg";
+import type { DictSchema } from "@i18n";
+
+interface Props {
+  dict: DictSchema;
+}
+
+const url = Astro.url.href.replace(".html", "");
+
+const { dict } = Astro.props as Props;
+
+const shareData = {
+  title: dict.meta.title,
+  text: dict.meta.desc,
+  url,
+};
+
+const shareFdbText = dict.share.text;
+const isDenied = dict.share.denied;
+const noscript = dict.share.noscript;
+const initialAria = dict.share.aria;
+---
+
+<button
+  id="share-btn"
+  aria-label={initialAria}
+  popovertarget="share-fdb"
+  popovertargetaction="toggle"
+  class="p-2 size-9 rounded-full cursor-pointer outline-2 outline-[#505d84] hover:outline-dark-pink hover:outline-[3px] active:outline-[3px] active:outline-dark-pink group transition-transform duration-150 ease-out hover:scale-110 focus-visible:outline-dark-pink bg-white dark:bg-black"
+  ><Share
+    class="size-6 -m-1 stroke-black dark:stroke-white group-hover:stroke-2 group-active:stroke-2 group-focus-visible:stroke-2 group-focus-within:stroke-2 fill-white dark:fill-black"
+  />
+</button>
+<div
+  id="share-fdb"
+  class="pointer-events-none ml-auto mr-2.5 mt-18 text-sm rounded-lg outline-2 outline-share-border noscript:text-share-txt-err text-share-txt bg-share-bg py-1.5 px-2"
+  popover
+  role="status"
+  aria-live="polite"
+>
+  <div class="flex justify-center items-center font-medium">
+    <Check
+      id="share-check"
+      class="noscript:hidden inline-block size-4 mr-1 mt-0.5"
+    />
+    <Err
+      id="share-err"
+      class="hidden noscript:inline-block size-4 mr-1 mt-0.5"
+    />
+    <p id="share-fbd-text" class="noscript:hidden">{shareFdbText}</p>
+    <p class="hidden noscript:inline">{noscript}</p>
+  </div>
+</div>
+
+<script is:inline define:vars={{ shareData, shareFdbText, isDenied, url }}>
+  const shareBtn = document.getElementById("share-btn");
+  const shareFdb = document.getElementById("share-fdb");
+  const shareFdbTxt = document.getElementById("share-fbd-text");
+  const shareCheck = document.getElementById("share-check");
+
+  const toggleScale = () => {
+    shareBtn.classList.toggle("hover:scale-110");
+    shareBtn.classList.toggle("scale-75");
+  };
+  let hideFdb;
+  let scaleDelay;
+
+  shareBtn.addEventListener("click", async (e) => {
+    e.preventDefault();
+    clearTimeout(hideFdb);
+    clearTimeout(scaleDelay);
+
+    toggleScale();
+    scaleDelay = setTimeout(() => toggleScale(), 100);
+
+    shareFdb.classList.remove("text-share-txt-err");
+    shareFdb.classList.add("text-share-txt");
+
+    try {
+      await navigator.share(shareData);
+    } catch (err) {
+      if (err.name === "AbortError") return;
+      try {
+        await navigator.clipboard.writeText(url);
+        shareFdbTxt.innerText = shareFdbText;
+      } catch (err) {
+        document.getElementById("share-err").classList.remove("hidden");
+        shareCheck.classList.remove("inline-block");
+        shareCheck.classList.add("hidden");
+        shareFdbTxt.innerText = isDenied;
+        shareFdb.classList.add("text-share-txt-err");
+      } finally {
+        shareFdb.showPopover();
+        hideFdb = setTimeout(() => shareFdb.hidePopover(), 2500);
+      }
+    }
+  });
+</script>

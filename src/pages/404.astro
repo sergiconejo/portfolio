@@ -1,0 +1,265 @@
+---
+import { settings } from "@i18n";
+const { defaultLang, langs } = settings;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>404 · Page not found</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <meta name="robots" content="noindex" />
+  </head>
+  <body>
+    <main>
+      <h1>4<span>0</span>4</h1>
+      <h2>This page doesn’t exist.</h2>
+      {
+        langs.map((lang) => {
+          const href = lang === defaultLang ? "/" : `/${lang}`;
+          return (
+            <a data-astro-prefetch="tap" lang={lang} href={href}>
+              Go to my {lang.toUpperCase()} portfolio
+            </a>
+          );
+        })
+      }
+    </main>
+  </body>
+</html>
+
+<style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background: #000;
+    color: #fff;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family:
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Roboto,
+      "Helvetica Neue",
+      Arial,
+      "Noto Sans",
+      "Liberation Sans",
+      sans-serif;
+    font-weight: 500;
+    line-height: 1.4;
+    overflow: hidden;
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      circle at center,
+      transparent 40%,
+      rgba(99, 0, 255, 0.05)
+    );
+  }
+
+  main {
+    text-align: center;
+    padding-top: 15dvh;
+  }
+
+  h1 {
+    font-size: 8rem;
+    position: relative;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.05em;
+  }
+
+  h1 span {
+    display: inline-block;
+    transition: transform 0.4s ease;
+  }
+
+  h1:hover span {
+    transform: rotate(180deg);
+    margin-inline: 1.5rem;
+    transition: margin-inline transform 0.3s ease;
+  }
+
+  h2 {
+    font-size: 2.2rem;
+    font-weight: 400;
+    line-height: 1.2;
+    margin-bottom: 2.5rem;
+    opacity: 0.85;
+    padding-inline: 16px;
+    text-wrap: balance;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+    margin-inline: auto;
+    display: block;
+    font-size: 1.5rem;
+    opacity: 0.8;
+    width: max-content;
+    padding: 1rem;
+    margin-top: 1rem;
+    font-weight: 400;
+  }
+  a:hover,
+  a:focus-visible,
+  a:focus-within {
+    color: #63e;
+    transform: translateY(-2px);
+  }
+  a {
+    transition:
+      color 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    h1::before,
+    h1::after {
+      animation: none;
+    }
+  }
+
+  h1::before,
+  h1::after {
+    content: "404";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  h1::before {
+    color: #c026d3;
+    animation: glitch-magenta 4s infinite;
+  }
+
+  h1::after {
+    color: #22d3ee;
+    animation: glitch-cyan 4s infinite;
+  }
+
+  @keyframes glitch-magenta {
+    0%,
+    92%,
+    100% {
+      opacity: 0;
+      transform: none;
+      clip-path: inset(0 0 0 0);
+    }
+
+    93% {
+      opacity: 1;
+      transform: translate(-6px, -2px);
+      clip-path: inset(10% 0 70% 0);
+      text-shadow:
+        30px 13px rgba(246, 0, 153, 0.8),
+        -38px -4px rgba(15, 210, 255, 0.8),
+        -2px -4px rgba(255, 210, 0, 1);
+    }
+
+    94% {
+      transform: translate(6px, 2px);
+      clip-path: inset(40% 0 30% 0);
+    }
+
+    95% {
+      transform: translate(-10px, 0);
+      clip-path: inset(70% 0 10% 0);
+    }
+
+    96% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes glitch-cyan {
+    0%,
+    91%,
+    100% {
+      opacity: 0;
+      transform: none;
+      clip-path: inset(0 0 0 0);
+    }
+
+    92% {
+      opacity: 1;
+      transform: translate(8px, 0);
+      clip-path: inset(0 0 60% 0);
+      text-shadow:
+        30px 13px rgba(246, 0, 153, 0.8),
+        -38px -4px rgba(15, 210, 255, 0.8),
+        -2px -4px rgba(255, 210, 0, 1);
+    }
+
+    93% {
+      transform: translate(-8px, 2px);
+      clip-path: inset(30% 0 40% 0);
+    }
+
+    94% {
+      transform: translate(12px, -2px);
+      clip-path: inset(60% 0 10% 0);
+    }
+
+    95% {
+      opacity: 0;
+    }
+  }
+</style>
+<script>
+  const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const errorMain = isDark ? "#FFFFFF" : "#111827";
+  const errorSoft = isDark ? "#9CA3AF" : "#4B5563";
+  const errorAccent = isDark ? "#58A6FF" : "#1D4ED8";
+
+  console.log(
+    `
+%c    404
+%c
+%cCheckpoint failed
+%cThis area does not exist.
+%c
+%cType home to respawn
+`,
+    `color:${errorMain}; font-size:22px; font-weight:100;`,
+    "",
+    `color:${errorSoft};`,
+    `color:${errorSoft};`,
+    "",
+    `color:${errorAccent}; font-weight:600;`,
+  );
+
+  Object.defineProperty(window, "home", {
+    get() {
+      window.location.href = "/";
+    },
+  });
+
+  const messages = [
+    "Route does not exist.",
+    "Requested page not found.",
+    "NoN-existing URL.",
+    "Incorrect link.",
+    "Unavailable path",
+  ];
+
+  document.querySelector("h2")!.textContent =
+    messages[Math.floor(Math.random() * messages.length)];
+</script>

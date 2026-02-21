@@ -1,0 +1,45 @@
+---
+import ShareBtn from "./ShareBtn.astro";
+import SwitchTheme from "./SwitchTheme.astro";
+import { settings } from "@i18n";
+
+const { dict } = Astro.props;
+const { defaultLang, langs } = settings;
+---
+
+<header
+  class="fixed right-0.5 w-full pr-6 pt-4 pb-2 flex items-center justify-end gap-6 z-10 bg-theme/50"
+>
+  <nav
+    aria-label={dict.langVer.text}
+    class="flex items-center justify-center bg-theme rounded-md px-0.75"
+  >
+    {
+      langs.map((lang: string, i) => {
+        const href = lang === defaultLang ? "/" : `/${lang}`;
+        const ActualLang = dict.lang === lang ? "false" : "hover";
+        return (
+          <>
+            <a
+              href={href}
+              lang={lang}
+              aria-current={dict.lang === lang ? "page" : undefined}
+              data-astro-prefetch={ActualLang}
+              class="font-semibold p-1"
+              title={dict.langVer.versions[i]}
+            >
+              {lang.toUpperCase()}
+            </a>
+            {i < langs.length - 1 && (
+              <span aria-hidden="true" class="mx-0.5 -mt-1">
+                |
+              </span>
+            )}
+          </>
+        );
+      })
+    }
+  </nav>
+  <SwitchTheme dict={dict} />
+  <ShareBtn dict={dict} />
+</header>

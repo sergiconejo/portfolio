@@ -1,0 +1,26 @@
+---
+import { settings } from "@i18n";
+
+const { dict } = Astro.props;
+const { text, code } = dict.footer;
+const { link, SvgText, SvgLink } = settings.footer;
+---
+
+<footer class="flex justify-center gap-5 p-4 bg-theme border-t">
+  <p>
+    {text}
+    {
+      SvgText && (
+        <SvgText class="inline-block size-7 -mt-1" aria-hidden="true" />
+      )
+    }
+  </p>
+  <a rel="me noopener" target="_blank" href={link}
+    >{code}
+    {
+      SvgLink && (
+        <SvgLink class="inline-block size-7 -mt-1" aria-hidden="true" />
+      )
+    }
+  </a>
+</footer>

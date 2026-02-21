@@ -1,0 +1,216 @@
+---
+import { settings, type DictSchema } from "@i18n";
+import Layout from "../layouts/Layout.astro";
+import { Picture } from "astro:assets";
+import Technology from "./Technology.astro";
+import In from "@assets/In.svg";
+import GITHUB from "@assets/tech/GitHub.svg";
+import CV from "@assets/CV.svg";
+import Tel from "@assets/Tel.svg";
+import Mail from "@assets/Mail.svg";
+import Project from "./Project.astro";
+
+interface Props {
+  dict: DictSchema;
+}
+
+const { dict } = Astro.props as Props;
+---
+
+<Layout dict={dict}>
+  <main class="py-28 flex flex-col gap-26 px-6">
+    <section class="flex justify-center items-center flex-wrap-reverse text-lg">
+      <div class="p-4 text-center">
+        <header
+          class="flex justify-center items-baseline flex-wrap gap-5 p-4 mb-4"
+        >
+          <h1 class="text-5xl">
+            {settings.myName}
+          </h1>
+          {
+            settings.links.linkedin && dict.hero.openToWork && (
+              <a
+                target="_blank"
+                rel="me noopener"
+                href={settings.links.linkedin}
+                class="inline-flex items-center transition hover:scale-105 w-max mt-auto font-medium"
+              >
+                <span class="relative inline-flex overflow-hidden rounded-full p-px text-white">
+                  <span class="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#63e_0%,#c490f4_50%,#63e_100%)] text-white" />
+                  <span class="inline-flex items-center justify-center w-full px-3 py-1 text-sm rounded-full cursor-pointer backdrop-blur-3xl whitespace-nowrap text-white text-shadow-black text-shadow-sm">
+                    {dict.hero.openToWork}
+                  </span>
+                </span>
+              </a>
+            )
+          }
+        </header>
+        <div class="flex flex-col justify-center items-center text-left">
+          {
+            dict.hero.desc.map((line) => (
+              <p class="text-pretty leading-8 mb-2.5">{line}</p>
+            ))
+          }
+        </div>
+        <nav class="mt-6 space-x-4 space-y-5">
+          {
+            settings.links.linkedin && (
+              <a
+                target="_blank"
+                rel="me noopener"
+                href={settings.links.linkedin}
+                class="inline-flex items-center gap-1"
+              >
+                <In class="inline-block size-8" aria-hidden="true" />
+                LinkedIn
+              </a>
+            )
+          }
+          {
+            settings.links.github && (
+              <a
+                target="_blank"
+                rel="me noopener"
+                href={settings.links.github}
+                class="inline-flex items-center gap-1"
+              >
+                <GITHUB class="inline-block size-8" aria-hidden="true" />
+                GitHub
+              </a>
+            )
+          }
+          {
+            dict.hero.resume && (
+              <a
+                href={`/${dict.links.cv}`}
+                target="_blank"
+                lang={dict.lang}
+                aria-label={dict.hero.resume}
+                class="inline-flex items-center gap-1"
+              >
+                <CV class="inline-block size-8" aria-hidden="true" />
+                CV
+              </a>
+            )
+          }
+          {
+            dict.links.tel && (
+              <a
+                href={`tel:${dict.links.tel.split(" ").join("")}`}
+                class="inline-flex items-center gap-1"
+              >
+                <Tel class="inline-block size-8" aria-hidden="true" />
+                {dict.links.tel}
+              </a>
+            )
+          }
+          {
+            dict.links.mail && (
+              <a
+                href={`mailto:${dict.links.mail}`}
+                class="inline-flex items-center gap-1"
+              >
+                <Mail class="inline-block size-8" aria-hidden="true" />
+                {dict.links.mail}
+              </a>
+            )
+          }
+        </nav>
+      </div>
+      {
+        dict.hero.Img && (
+          <Picture
+            src={dict.hero.Img}
+            priority
+            alt={dict.hero.altImg}
+            width="400"
+            sizes="(max-width: 640px) 90vw,(max-width: 1024px) 50vw, 400px"
+            class="myImage"
+            formats={["avif", "webp"]}
+          />
+        )
+      }
+    </section>
+    <section class="text-center">
+      <h2 class="text-4xl font-medium">{dict.titleSections.tech}</h2>
+      <ul class="flex gap-8 mt-12 justify-center items-center flex-wrap">
+        {settings.techs.map((tech) => <Technology name={tech} />)}
+      </ul>
+    </section>
+    <section class="text-lg space-y-28">
+      <header class="mb-12 space-y-2 text-center">
+        <h2 class="text-4xl font-medium">
+          {dict.titleSections.xp}
+        </h2>
+        <p class="text-balance text-xl">{dict.titleSections.subxp}</p>
+      </header>
+
+      {dict.projects.map((project) => <Project project={project} />)}
+    </section>
+    <section>
+      <h2 class="text-4xl font-medium mb-12 text-center">
+        {dict.titleSections.about}
+      </h2>
+      <div
+        class="flex gap-6 justify-center items-stretch flex-wrap mx-auto text-lg"
+      >
+        <Picture
+          src={dict.about.Img}
+          priority
+          alt={dict.about.altImg}
+          width="770"
+          sizes="(max-width: 768px) 90vw, 400px"
+          formats={["avif", "webp"]}
+        />
+        <div class="max-w-[80ch] flex flex-col justify-center px-px">
+          {
+            dict.about.text.map((line) => (
+              <p class="whitespace-pre-line text-pretty">{line}</p>
+            ))
+          }
+          {
+            dict.about.cite && (
+              <q class="italic mb-2 mt-auto max-[1691px]:mt-12">
+                {dict.about.cite}
+              </q>
+            )
+          }
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<script>
+  const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const accent = isDark ? "#9BE9A8" : "#166534";
+  const soft = isDark ? "#9CA3AF" : "#4B5563";
+  const link = isDark ? "#58A6FF" : "#1D4ED8";
+
+  console.log(
+    `\n
+%c🕵️ Curious dev-tected!
+%c
+%cIf you're reading this, you're my kind of person.
+%c
+%cYou can play changing the web text typing: demo
+%c
+%cExplore the source →
+%chttps://github.com/sergiconejo/portfolio
+`,
+    `color:${accent}; font-size:22px; font-weight:600;`,
+    "",
+    `color:${soft};`,
+    "",
+    `color:${soft};`,
+    "",
+    `color:${link};`,
+    `color:${link}; text-decoration: underline;`,
+  );
+
+  Object.defineProperty(window, "demo", {
+    get() {
+      document.designMode = "on";
+    },
+  });
+</script>
