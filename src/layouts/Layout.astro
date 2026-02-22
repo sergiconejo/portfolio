@@ -1,0 +1,108 @@
+---
+import "../styles/global.css";
+import { settings, type DictSchema } from "@i18n";
+import Header from "@components/Header.astro";
+import Footer from "@components/Footer.astro";
+interface Props {
+  dict: DictSchema;
+}
+
+const pathname = Astro.url.pathname;
+const { dict } = Astro.props as Props;
+const { domain, defaultLang, langs, myName, twitter, profession } = settings;
+const canonical = dict.lang === defaultLang ? domain : domain + pathname;
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "@id": `${domain}#person`,
+  name: myName,
+  url: domain,
+  image: `${domain}/og.webp`,
+  jobTitle: profession,
+  description: dict.meta.desc,
+  mainEntityOfPage: {
+    "@type": "WebSite",
+    "@id": `${domain}#website`,
+  },
+  sameAs: [settings.links.linkedin, settings.links.github],
+  knowsAbout: settings.knowsAbout,
+  address: {
+    "@type": "PostalAddress",
+    addressCountry: settings.country,
+  },
+  hasOccupation: {
+    "@type": "Occupation",
+    name: profession,
+    occupationLocation: {
+      "@type": "Country",
+      name: settings.occupationLocation,
+    },
+  },
+};
+---
+
+<!doctype html>
+<html lang={dict.lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{dict.meta.title}</title>
+    <meta name="description" content={dict.meta.desc} />
+    <link
+      id="dark-icon"
+      rel="icon"
+      href="/favicon-dark.svg"
+      type="image/svg+xml"
+      media="(prefers-color-scheme: dark)"
+    />
+    <link
+      id="light-icon"
+      rel="icon"
+      href="/favicon-light.svg"
+      type="image/svg+xml"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta name="author" content={myName} />
+
+    <meta name="robots" content="index, follow" />
+
+    <link rel="canonical" href={canonical} />
+    {
+      langs.map((lang: string) => (
+        <link
+          rel="alternate"
+          hreflang={lang}
+          href={lang === defaultLang ? domain : domain + "/" + lang}
+        />
+      ))
+    }
+    <link rel="alternate" hreflang="x-default" href={domain} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={myName} />
+    <meta property="og:title" content={dict.meta.title} />
+    <meta property="og:description" content={dict.meta.desc} />
+    <meta property="og:image" content=`${domain}/og.webp` />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    {twitter && <meta property="twitter:creator" content={twitter} />}
+    <meta name="twitter:title" content={dict.meta.title} />
+    <meta name="twitter:description" content={dict.meta.desc} />
+    <meta name="twitter:image" content=`${domain}/og.webp` />
+    <meta name="twitter:url" content={canonical} />
+
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify(schema)}
+    />
+  </head>
+  <body>
+    <div id="bg"></div>
+    <Header dict={dict} />
+    <slot />
+    <Footer dict={dict} />
+  </body>
+</html>

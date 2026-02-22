@@ -1,0 +1,9 @@
+---
+import { LOCALES } from "@i18n";
+import Main from "@components/Main.astro";
+
+const locale = Astro.currentLocale!;
+const dict = LOCALES[locale];
+---
+
+<Main dict={dict} />

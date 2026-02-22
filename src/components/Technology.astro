@@ -1,0 +1,22 @@
+---
+import TECHS from "../lib/techs";
+
+interface Props {
+  name: string;
+}
+
+const { name } = Astro.props as Props;
+const Svg = TECHS[name.toLocaleLowerCase()].svg;
+---
+
+<li>
+  <figure class="flex flex-col justify-center items-center">
+    <Svg
+      class="size-18 block"
+      preserveAspectRatio="xMidYMid meet"
+      aria-hidden="true"
+      focusable="false"
+    />
+    <figcaption class="mt-1">{name}</figcaption>
+  </figure>
+</li>

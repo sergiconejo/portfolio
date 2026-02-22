@@ -1,0 +1,95 @@
+@import "tailwindcss";
+
+@layer base { * { transition: background-color 300ms ease } }
+
+/* apply dark when prefers-color-scheme is dark and switch-teme not checked or prefers-color-scheme is light and switch-theme is checked*/
+@custom-variant dark {
+  @media (prefers-color-scheme: dark) {
+    :root:not(:has(#switch-theme:checked)) & { @slot } }
+
+  @media (prefers-color-scheme: light) {
+    :root:has(#switch-theme:checked) & { @slot } }
+}
+
+/* light variables */
+@theme {
+  --color-theme: #fff;
+  --color-inverted-theme: #000;
+  
+  --color-dark-pink: #63e;
+  --color-light-pink: #c490f4;
+  --color-accent-theme: #63e;
+  
+  --color-react: rgb(88 196 220);
+  --color-next-circle: transparent;
+  
+  --color-share-bg: #fff;
+  --color-share-border: #e5e5e5;
+  --color-share-txt: #0a0a0a;
+  --color-share-txt-err: #eb0005;
+  
+  --bubble-x: translateX(-40px);
+  --before: 0;
+}
+
+/* Dark variables */
+@utility dark-theme {
+  color: white;
+  --color-theme: #000;
+  --color-inverted-theme: #fff;
+  --color-accent-theme: #c490f4;
+
+  --color-react: rgb(8 126 164);
+  --color-next-circle: #fff;
+
+  --color-share-bg: #171717;
+  --color-share-border: #737373;
+  --color-share-txt: #fafafa;
+  --color-share-txt-err: #ff6466;
+
+  --bubble-x: translateX(0);
+  --before: 1;
+}
+
+/* Prefers dark and input not checked = dark */
+@media (prefers-color-scheme: dark) { :root:not(:has(#switch-theme:checked)) { @apply dark-theme } }
+
+/* Prefers light and input checked = dark */
+@media (prefers-color-scheme: light) { :root:has(#switch-theme:checked) { @apply dark-theme } }
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, "Noto Sans", "Liberation Sans", sans-serif;
+}
+
+#bg {
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(125% 125% at 50% 10%, #fff 40%, #63e 100%);
+}
+
+#bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(125% 125% at 50% 10%, #000 40%, #63e 100%);
+  opacity: var(--before);
+  transition: opacity 300ms ease;
+}
+
+.myImage {
+  shape-outside: circle(50%);
+  clip-path: circle(50%);
+  object-fit: cover;
+  object-position: 0% 0%;
+  aspect-ratio: 1/1;
+  margin-top: -52px;
+}
+
+a:hover, a:focus-visible, a:focus-within {color: var(--color-accent-theme);}

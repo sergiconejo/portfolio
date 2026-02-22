@@ -1,0 +1,97 @@
+---
+const { dict } = Astro.props;
+const { initial, toDark, toLight } = dict.theme;
+---
+
+<input
+  id="switch-theme"
+  type="checkbox"
+  role="switch"
+  aria-label={initial}
+  class="sr-only peer"
+/>
+<label
+  for="switch-theme"
+  class="relative rounded-full cursor-pointer flex justify-between items-center p-2 w-18 h-8 border-2 border-[#505d84] outline-dark-pink outline-offset-2 peer-hover:border-dark-pink peer-focus-visible:border-dark-pink peer-focus-within:border-dark-pink peer-hover:outline-2 peer-focus-visible:outline-2 peer-focus-within:outline-2 bg-theme"
+>
+  <svg
+    id="sun"
+    aria-hidden="true"
+    class="-ml-[4.5px] z-10 stroke-black dark:stroke-white"
+    width="20px"
+    height="20px"
+    viewBox="0 0 24 24"
+    stroke="#fff"
+    stroke-width="1.5"
+    fill="none"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path stroke="none" d="M0 0h24v24H0z"></path>
+    <circle cx="12" cy="12" r="4"></circle>
+    <path
+      d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7"
+    ></path>
+  </svg>
+  <svg
+    id="moon"
+    aria-hidden="true"
+    class="-mr-[4.5px] z-10 dark:stroke-black"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    stroke="#000"
+    stroke-width="1.5"
+    fill="none"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path stroke="none" d="M0 0h24v24H0z"></path>
+    <path
+      d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"
+    ></path>
+  </svg>
+  <div
+    id="bubbleTheme"
+    class="absolute right-0 transition-transform duration-300 bg-light-pink size-[28.25px] rounded-full transform-(--bubble-x)"
+  >
+  </div>
+</label>
+
+<script is:inline define:vars={{ toDark, toLight }}>
+  const switchTheme = document.getElementById("switch-theme");
+  const darkIcon = document.getElementById("dark-icon");
+  const lightIcon = document.getElementById("light-icon");
+
+  const getPrefDark = () => window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const updateAria = (isDark) => (switchTheme.ariaLabel = isDark ? toLight : toDark);
+
+  const updateIcon = (isDark) => {
+    darkIcon.media = isDark ? "all" : "not all";
+    lightIcon.media = isDark ? "not all" : "all";
+  };
+
+  const savedTheme = localStorage.getItem("darkTheme");
+
+  let isDark = savedTheme ? savedTheme === "true" : getPrefDark();
+
+  switchTheme.checked = isDark !== getPrefDark();
+  updateAria(isDark);
+  updateIcon(isDark);
+
+  switchTheme.addEventListener("change", (e) => {
+    const prefDark = getPrefDark();
+    const isDark = (prefDark && !e.target.checked) || (!prefDark && e.target.checked);
+    localStorage.setItem("darkTheme", isDark);
+    updateAria(isDark);
+    updateIcon(isDark);
+  });
+
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+    localStorage.removeItem("darkTheme");
+    switchTheme.checked = false;
+    updateAria(getPrefDark());
+    darkIcon.media = "(prefers-color-scheme: dark)";
+    lightIcon.media = "(prefers-color-scheme: light)";
+  });
+</script>
